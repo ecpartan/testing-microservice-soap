@@ -1,0 +1,38 @@
+{
+  "1": {
+    "Script": {
+      "1": {
+        "SetParameterValues": [
+          {
+            "name": "InternetGatewayDevice.DownloadDiagnostics.DownloadURL",
+            "type": "xsd:string",
+            "value": "https://archive.openwrt.org/releases/19.07.8/targets/gemini/generic/openwrt-19.07.8-gemini-dlink_dir-685-squashfs-sysupgrade.bin"
+          },
+          {
+            "name": "InternetGatewayDevice.DownloadDiagnostics.DiagnosticsState",
+            "type": "xsd:string",
+            "value": "Requested"
+          }
+        ],
+        "WaitEvent": 8
+      },
+      "Event": 6,
+      "Once": true,
+      "Serial": "009012BD0001"
+    }
+  },
+  "2": {
+    "Script": {
+      "1": {
+        "GetParameterValues": {
+          "Name": [
+            "InternetGatewayDevice.DownloadDiagnostics."
+          ]
+        }
+      },
+      "Event": 6,
+      "Once": true,
+      "Serial": "009012BD0001"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+
+[
+{
+"type":"SetAuthorization",
+"params": []
+},
+{
+"type":"AddObject",
+"params":[{"name":"InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection."}]
+},
+{
+"type": "SetParameterValues",
+"params": [
+        {
+          "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0.SubnetMask",
+          "value": "255.255.255.240",
+          "type": "xsd:string"
+        },
+        {
+          "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0.Enable",
+          "value": "1",
+          "type": "xsd:boolean"
+        },
+        {
+          "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0.AddressingType",
+          "value": "Static",
+          "type": "xsd:string"
+        },
+        {
+          "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0.ExternalIPAddress",
+          "value": "192.168.152.31",
+          "type": "xsd:string"
+        }
+]
+}
+]
+

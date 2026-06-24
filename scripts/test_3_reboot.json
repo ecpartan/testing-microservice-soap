@@ -1,0 +1,13 @@
+{
+  "1": {
+    "Script": {
+      "1": {
+        "Reboot": {},
+        "WaitEvent": 1
+      },
+      "Event": 6,
+      "Once": true,
+      "Serial": "009012BD0001"
+    }
+  }
+}

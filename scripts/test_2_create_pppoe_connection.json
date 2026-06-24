@@ -1,0 +1,52 @@
+{
+  "1": {
+    "Script": {
+      "1": {
+        "AddObject": {
+          "Name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection."
+        }
+      },
+      "2": {
+        "GetParameterValues": {
+          "Name": [
+            "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1."
+          ]
+        }
+      },
+      "3": {
+        "SetParameterValues": [
+          {
+            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1.SubnetMask",
+            "type": "xsd:string",
+            "value": "255.255.255.240"
+          },
+          {
+            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1.Enable",
+            "type": "xsd:boolean",
+            "value": "1"
+          },
+          {
+            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1.AddressingType",
+            "type": "xsd:string",
+            "value": "Static"
+          },
+          {
+            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1.ExternalIPAddress",
+            "type": "xsd:string",
+            "value": "192.168.152.31"
+          }
+        ]
+      },
+      "4": {
+        "GetParameterValues": {
+          "Name": [
+            "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1."
+          ]
+        }
+      },
+      "Event": 6,
+      "Once": true,
+      "Serial": "009012BD0001"
+    }
+  }
+}

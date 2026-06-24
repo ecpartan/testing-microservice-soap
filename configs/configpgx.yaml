@@ -1,0 +1,43 @@
+---
+app:
+database:
+  host: 127.0.0.1
+  port: 5432
+  username: postgres
+  password: postgres
+  database: acsserver
+  driver: pgx
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+  ttl: 3600
+  min_idle_conns: 10
+  max_idle_conns: 100
+  max_active_conns: 10000
+server:
+  host: 0.0.0.0
+  port: 8080
+  port_web: 8087
+  cors:
+    debug: true
+    allowed-methods: ["GET", "POST", "PATCH", "PUT", "OPTIONS", "DELETE"]
+    allowed-origins:
+      - "http://localhost:8080"
+    allow-credentials: true
+    allowed-headers:
+      - "Authorization"
+      - "Location"
+      - "Charset"
+      - "Access-Control-Allow-Origin"
+      - "Content-Type"
+      - "Origin"
+      - "Accept"
+      - "Content-Length"
+      - "Accept-Encoding"
+      - "X-CSRF-Token"
+    options-passthrough: true
+    exposed-headers:
+      - "Location"
+      - "Authorization"
+      - "Content-Disposition"

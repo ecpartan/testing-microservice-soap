@@ -1,0 +1,12 @@
+{
+  "1": {
+    "Script": {
+      "1": {
+        "SetAuthorization": {}
+      },
+      "Event": 6,
+      "Once": true,
+      "Serial": "009012BD0001"
+    }
+  }
+}

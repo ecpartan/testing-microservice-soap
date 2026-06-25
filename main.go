@@ -20,8 +20,8 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
-	"github.com/ecpartan/soap-server-tr069/internal/config"
-	"github.com/ecpartan/soap-server-tr069/internal/parsemap"
+	"github.com/ecpartan/soap-server-tr069/pkg/config"
+	"github.com/ecpartan/soap-server-tr069/pkg/parsemap"
 )
 
 type RetScriptTask struct {
@@ -36,6 +36,7 @@ type test_context struct {
 var test_ctx test_context
 
 func get_resp_tsk(i int, mp map[string]any) (map[string]any, error) {
+
 	if analize_task, ok := mp[strconv.Itoa(i+1)]; !ok {
 		return nil, errors.New("Not found task1")
 	} else {

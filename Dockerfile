@@ -1,8 +1,10 @@
 FROM golang:latest
 
-RUN mkdir /app
+WORKDIR /app
+
+COPY go.mod go.sum* ./
+RUN go mod download
+
 COPY . .
-WORKDIR /app/
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /app/bin/main ./cmd/server
-WORKDIR /app/
+RUN go build -o main .
 CMD ["./main"]

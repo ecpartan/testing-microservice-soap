@@ -275,6 +275,8 @@ func SendReport(report map[string]string) {
 }
 
 func main() {
+	time.Sleep(20 * time.Second)
+
 	dir := "./scripts"
 	files, err := os.ReadDir("./scripts")
 
@@ -290,8 +292,10 @@ func main() {
 	})
 
 	cfg := config.GetConfig()
-	url := fmt.Sprintf("http://%s:%d/integral", cfg.Server.Host, cfg.Server.Port)
-
+	var url string
+	if url = os.Getenv("SERVER_URL"); url == "" {
+		url = fmt.Sprintf("http://%s:%d/integral", cfg.Server.Host, cfg.Server.Port)
+	}
 	for _, file := range files {
 		if file.IsDir() {
 			continue

@@ -9,29 +9,29 @@
       "2": {
         "GetParameterValues": {
           "Name": [
-            "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1."
+            "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0."
           ]
         }
       },
       "3": {
         "SetParameterValues": [
           {
-            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1.SubnetMask",
+            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0.SubnetMask",
             "type": "xsd:string",
             "value": "255.255.255.240"
           },
           {
-            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1.Enable",
+            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0.Enable",
             "type": "xsd:boolean",
             "value": "1"
           },
           {
-            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1.AddressingType",
+            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0.AddressingType",
             "type": "xsd:string",
             "value": "Static"
           },
           {
-            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1.ExternalIPAddress",
+            "name": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0.ExternalIPAddress",
             "type": "xsd:string",
             "value": "192.168.152.31"
           }
@@ -40,7 +40,7 @@
       "4": {
         "GetParameterValues": {
           "Name": [
-            "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#1."
+            "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.#0."
           ]
         }
       },

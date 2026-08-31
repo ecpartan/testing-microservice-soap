@@ -17,8 +17,7 @@
         "WaitEvent": 8
       },
       "Event": 6,
-      "Once": true,
-      "Serial": "009012BD0001"
+      "Once": true
     }
   },
   "2": {
@@ -31,8 +30,7 @@
         }
       },
       "Event": 6,
-      "Once": true,
-      "Serial": "009012BD0001"
+      "Once": true
     }
   }
 }

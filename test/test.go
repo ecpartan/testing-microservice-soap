@@ -35,7 +35,7 @@ var test_ctx test_context
 
 func get_resp_tsk(i int, mp map[string]any) (map[string]any, error) {
 
-	if analize_task, ok := mp[strconv.Itoa(i+1)]; !ok {
+	if analize_task, ok := mp[strconv.Itoa(i)]; !ok {
 		return nil, errors.New("Not found task1")
 	} else {
 		if task, ok := analize_task.(map[string]any); !ok {
@@ -47,10 +47,12 @@ func get_resp_tsk(i int, mp map[string]any) (map[string]any, error) {
 }
 
 func check_code_task(task map[string]any, code string) error {
+
 	tsk_code, ok := task["Code"]
 	if !ok {
 		return errors.New("Not found code")
 	}
+
 	if req_code, ok := tsk_code.(float64); ok {
 		resp_port, err := strconv.Atoi(code)
 		if err != nil {
@@ -61,6 +63,7 @@ func check_code_task(task map[string]any, code string) error {
 			return errors.New("Code mismatch")
 		}
 	}
+	logger.LogDebug("Code is matched")
 	return nil
 }
 
@@ -90,9 +93,7 @@ func SubstrByToken(str string, token byte, replace_map map[string]string) string
 	return ""
 }
 
-func check_message(task map[string]any, message map[string]any) error {
-	logger.LogDebug("Enter ")
-
+func add_instance(task map[string]any, message map[string]any) (error, bool) {
 	if find_instance_key, ok := task["Instance"]; ok {
 		inst := parsemap.GetXMLString(message, "InstanceNumber")
 		logger.LogDebug("InstanceNumber22 ", reflect.TypeOf(inst), inst)
@@ -101,12 +102,16 @@ func check_message(task map[string]any, message map[string]any) error {
 
 			if inst != "" && find_instance_key != "" {
 				test_ctx.map_inst[key] = inst
-				return nil
+				return nil, true
 			} else {
-				return fmt.Errorf("Not found instance")
+				return fmt.Errorf("Not found instance"), true
 			}
 		}
 	}
+	return nil, false
+}
+
+func check_instance(task map[string]any, message map[string]any) (error, bool) {
 
 	if find_instance_path, ok := task["FindInstance"].(string); ok {
 		logger.LogDebug("FindInstance22 ", test_ctx.map_inst)
@@ -123,15 +128,19 @@ func check_message(task map[string]any, message map[string]any) error {
 				find = strings.HasPrefix(name, find_instance_path)
 				if find {
 					logger.LogDebug("Finded ", name, find_instance_path)
-					return nil
+					return nil, true
 				}
 			}
 		}
 		if !find {
-			return fmt.Errorf("Not found name %s in return ParameterValueStruct", find_instance_path)
+			return fmt.Errorf("Not found name %s in return ParameterValueStruct", find_instance_path), true
 		}
 	}
 
+	return nil, false
+}
+
+func find_instance(task map[string]any, message map[string]any) (error, bool) {
 	if find_inst_values, ok := task["FindValue"].(map[string]any); ok {
 		paramlist := parsemap.GetXML(message, "ParameterList.ParameterValueStruct").([]any)
 
@@ -146,23 +155,29 @@ func check_message(task map[string]any, message map[string]any) error {
 					value_trans := parsemap.GetXMLString(v, "Value")
 					if value_trans != "" && value_trans == value_mess {
 						logger.LogDebug("Finded ", path, value_mess)
-						find = true
+						return nil, true
 					}
 				}
 			}
 			if !find {
-				return fmt.Errorf("Not found name %s with value %s in return ParameterValueStruct", path, value_mess)
+				return fmt.Errorf("Not found name %s with value %s in return ParameterValueStruct", path, value_mess), true
 			}
 		}
 	}
+	return nil, false
+}
 
+func get_speed(task map[string]any, message map[string]any) (error, bool) {
 	if find_inst_values, ok := task["GetSpeed"].(map[string]any); ok {
-		mode := parsemap.GetXMLString(find_inst_values, "Mode")
+		logger.LogDebug("GetSpeed", find_inst_values)
+
+		mode := find_inst_values["Mode"]
+		logger.LogDebug("GetSpeed", mode)
 
 		if mode == "Download" {
 			paramlist := parsemap.GetXML(message, "ParameterList.ParameterValueStruct").([]any)
 			var eom, rom string
-			var total int64
+			var total int
 			for _, v := range paramlist {
 				name := parsemap.GetXMLString(v, "Name")
 				if name != "" && name == "InternetGatewayDevice.DownloadDiagnostics.ROMTime" {
@@ -174,7 +189,8 @@ func check_message(task map[string]any, message map[string]any) error {
 				}
 
 				if name != "" && name == "InternetGatewayDevice.DownloadDiagnostics.TotalBytesReceived" {
-					total = parsemap.GetXML(v, "Value").(int64)
+					totalstr := parsemap.GetXMLString(v, "Value")
+					total, _ = strconv.Atoi(totalstr)
 				}
 			}
 			layout := "2006-01-02T15:04:05.999999"
@@ -189,10 +205,44 @@ func check_message(task map[string]any, message map[string]any) error {
 			logger.LogDebug("InstanceNumber23 ", total, rom, eom, diffSeconds, speed)
 
 			if speed < 10 {
-				return fmt.Errorf("speed < 10 Mb/s, speed = %f", speed)
+				return fmt.Errorf("speed < 10 Mb/s, speed = %f", speed), true
 			}
 
+			return nil, true
+
 		}
+	}
+
+	return nil, false
+}
+
+func upload_config(task map[string]any, message map[string]any) (error, bool) {
+	logger.LogDebug("upload_conf", message)
+
+	if _, ok := task["CheckCode"].(map[string]any); ok {
+		logger.LogDebug("upload_conf", message)
+		paramlist := parsemap.GetXML(message, "FaultStruct")
+		str := parsemap.GetXMLString(paramlist, "FaultString")
+
+		if str != "" {
+			return fmt.Errorf("Error in upload config: %s", str), true
+		}
+	}
+	return nil, false
+}
+func check_message(task map[string]any, message map[string]any) error {
+	logger.LogDebug("Enter ")
+
+	if err, ok := add_instance(task, message); ok {
+		return err
+	} else if err, ok := check_instance(task, message); ok {
+		return err
+	} else if err, ok := find_instance(task, message); ok {
+		return err
+	} else if err, ok := get_speed(task, message); ok {
+		return err
+	} else if err, ok := upload_config(task, message); ok {
+		return err
 	}
 
 	return nil
@@ -218,17 +268,25 @@ func AnalizeResponse(arr []RetScriptTask, path string, num string) error {
 	if json.Unmarshal(data, &mp) != nil {
 		return err
 	}
+	logger.LogDebug("Tasks: ", arr)
 
-	for i, rettask := range arr {
-		if script, ok := mp[num]; ok {
+	for _, rettask := range arr {
+
+		if script, ok := mp["1"]; ok {
+
 			if script_mp, ok := script.(map[string]any); ok {
+
+				i, _ := strconv.Atoi(num)
 				task, err := get_resp_tsk(i, script_mp)
 				if err != nil {
+					logger.LogDebug("Error: ", err)
+
 					return err
 				}
 				logger.LogDebug("Task: ", task)
 
 				if err := check_code_task(task, rettask.Code); err != nil {
+					logger.LogDebug("Error: ", err)
 					return err
 				}
 
@@ -236,6 +294,8 @@ func AnalizeResponse(arr []RetScriptTask, path string, num string) error {
 					return err
 				}
 			}
+		} else {
+			logger.LogDebug("Analize task not founded")
 		}
 	}
 
@@ -258,6 +318,9 @@ func Execute_test() map[string]string {
 	})
 
 	cfg := config.GetServerConfig()
+	cfgfw := config.GetFirmwareConfig()
+	sn := cfgfw.Serial
+
 	var url string
 	if url = os.Getenv("SERVER_URL"); url == "" {
 		url = fmt.Sprintf("http://%s:%d/integral", cfg.Host, cfg.Port)
@@ -300,7 +363,10 @@ func Execute_test() map[string]string {
 
 			if script, ok := mp[k]; ok {
 				if script_mp, ok := script.(map[string]any); ok {
-
+					if curr, ok := script_mp["Script"].(map[string]any); ok {
+						curr["Serial"] = sn
+					}
+					logger.LogDebug("script", script_mp)
 					jsonData, err := json.Marshal(script_mp)
 					if err != nil {
 						log.Printf("JSON err: %v", script_mp)

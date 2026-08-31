@@ -1,0 +1,15 @@
+{
+  "1": {
+    "Script": {
+      "1": {
+        "Upload": {
+          "file": "config",
+          "url": "http://192.168.0.129:8080/upload/"
+        },
+        "WaitEvent": 9
+      },
+      "Event": 6,
+      "Once": true
+    }
+  }
+}

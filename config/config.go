@@ -26,10 +26,15 @@ type ServerInfo struct {
 	Host string `yaml:"host"`
 }
 
+type Firmware struct {
+	Serial string `yaml:"serial"`
+}
+
 type Config struct {
 	ServerInfo ServerInfo `yaml:"server"`
 	Mail       MailReport `yaml:"mail"`
 	Tg         TgReport   `yaml:"tg"`
+	Firmware   Firmware   `yaml:"firmware"`
 }
 
 var once sync.Once
@@ -72,4 +77,8 @@ func GetTgconfig() *TgReport {
 
 func GetServerConfig() *ServerInfo {
 	return &config.ServerInfo
+}
+
+func GetFirmwareConfig() *Firmware {
+	return &config.Firmware
 }

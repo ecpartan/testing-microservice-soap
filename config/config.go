@@ -22,12 +22,18 @@ type TgReport struct {
 }
 
 type ServerInfo struct {
-	Port int    `yaml:"port"`
-	Host string `yaml:"host"`
+	Port       int    `yaml:"port"`
+	Host       string `yaml:"host"`
+	CronHour   int    `yaml:"cron_hour"`
+	CronMinute int    `yaml:"cron_minute"`
 }
 
 type Firmware struct {
-	Serial string `yaml:"serial"`
+	Serial            string `yaml:"serial"`
+	ScriptsDir        string `yaml:"scripts_dir"`
+	AnalizeReportsDir string `yaml:"analize_reports_dir"`
+	Name              string `yaml:"name"`
+	UpdateFwDir       string `yaml:"update_fw_dir"`
 }
 
 type Config struct {

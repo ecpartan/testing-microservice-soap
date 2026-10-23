@@ -34,7 +34,7 @@ type test_context struct {
 var test_ctx test_context
 
 func get_resp_tsk(i int, mp map[string]any) (map[string]any, error) {
-
+	logger.LogDebug("get_resp_task", i, mp)
 	if analize_task, ok := mp[strconv.Itoa(i)]; !ok {
 		return nil, errors.New("Not found task1")
 	} else {
@@ -90,7 +90,7 @@ func SubstrByToken(str string, token byte, replace_map map[string]string) string
 		}
 	}
 
-	return ""
+	return str
 }
 
 func add_instance(task map[string]any, message map[string]any) (error, bool) {
@@ -142,25 +142,31 @@ func check_instance(task map[string]any, message map[string]any) (error, bool) {
 
 func find_instance(task map[string]any, message map[string]any) (error, bool) {
 	if find_inst_values, ok := task["FindValue"].(map[string]any); ok {
-		paramlist := parsemap.GetXML(message, "ParameterList.ParameterValueStruct").([]any)
 
-		for path, val := range find_inst_values {
-			value_mess := val.(string)
-			path = SubstrByToken(path, '#', test_ctx.map_inst)
-			find := false
-			logger.LogDebug("Find value", path, value_mess)
-			for _, v := range paramlist {
-				name := parsemap.GetXMLString(v, "Name")
-				if name != "" && name == path {
-					value_trans := parsemap.GetXMLString(v, "Value")
-					if value_trans != "" && value_trans == value_mess {
-						logger.LogDebug("Finded ", path, value_mess)
-						return nil, true
+		if paramlist, ok := parsemap.GetXML(message, "ParameterList.ParameterValueStruct").([]any); !ok {
+			paramlist = make([]any, 0)
+			if params, ok := parsemap.GetXML(message, "ParameterList.ParameterValueStruct").(map[string]any); ok {
+				paramlist = append(paramlist, params)
+			}
+			logger.LogDebug("find_instance", paramlist, find_inst_values)
+			for path, val := range find_inst_values {
+				value_mess := val.(string)
+				path = SubstrByToken(path, '#', test_ctx.map_inst)
+				find := false
+				logger.LogDebug("Find value", path, value_mess)
+				for _, v := range paramlist {
+					name := parsemap.GetXMLString(v, "Name")
+					if name == path {
+						value_trans := parsemap.GetXMLString(v, "Value")
+						if value_trans == value_mess {
+							logger.LogDebug("Finded ", path, value_mess)
+							return nil, true
+						}
 					}
 				}
-			}
-			if !find {
-				return fmt.Errorf("Not found name %s with value %s in return ParameterValueStruct", path, value_mess), true
+				if !find {
+					return fmt.Errorf("Not found name %s with value %s in return ParameterValueStruct", path, value_mess), true
+				}
 			}
 		}
 	}
@@ -216,7 +222,7 @@ func get_speed(task map[string]any, message map[string]any) (error, bool) {
 	return nil, false
 }
 
-func upload_config(task map[string]any, message map[string]any) (error, bool) {
+func config_operations(task map[string]any, message map[string]any) (error, bool) {
 	logger.LogDebug("upload_conf", message)
 
 	if _, ok := task["CheckCode"].(map[string]any); ok {
@@ -241,7 +247,7 @@ func check_message(task map[string]any, message map[string]any) error {
 		return err
 	} else if err, ok := get_speed(task, message); ok {
 		return err
-	} else if err, ok := upload_config(task, message); ok {
+	} else if err, ok := config_operations(task, message); ok {
 		return err
 	}
 
@@ -249,9 +255,10 @@ func check_message(task map[string]any, message map[string]any) error {
 }
 
 func AnalizeResponse(arr []RetScriptTask, path string, num string) error {
-	dir := "./analize"
+	logger.LogDebug("AnalizeResponse", "path: ", path, "num: ", num)
 
-	filePath := filepath.Join(dir, path)
+	cfgfw := config.GetFirmwareConfig()
+	filePath := filepath.Join(cfgfw.AnalizeReportsDir, path)
 
 	content, err := os.Open(filePath)
 	if err != nil {
@@ -270,32 +277,34 @@ func AnalizeResponse(arr []RetScriptTask, path string, num string) error {
 	}
 	logger.LogDebug("Tasks: ", arr)
 
-	for _, rettask := range arr {
+	script := mp[num]
+	logger.LogDebug("Tasks1: ", script)
 
-		if script, ok := mp["1"]; ok {
+	if script == nil {
+		return errors.New("script not found")
+	}
 
-			if script_mp, ok := script.(map[string]any); ok {
+	for i, rettask := range arr {
 
-				i, _ := strconv.Atoi(num)
-				task, err := get_resp_tsk(i, script_mp)
-				if err != nil {
-					logger.LogDebug("Error: ", err)
+		if script_mp, ok := script.(map[string]any); ok {
+			logger.LogDebug("Tasks1: ", script_mp)
 
-					return err
-				}
-				logger.LogDebug("Task: ", task)
+			task, err := get_resp_tsk(i+1, script_mp)
+			if err != nil {
+				logger.LogDebug("Error: ", err)
 
-				if err := check_code_task(task, rettask.Code); err != nil {
-					logger.LogDebug("Error: ", err)
-					return err
-				}
-
-				if err := check_message(task, rettask.Message); err != nil {
-					return err
-				}
+				return err
 			}
-		} else {
-			logger.LogDebug("Analize task not founded")
+			logger.LogDebug("Task: ", task)
+
+			if err := check_code_task(task, rettask.Code); err != nil {
+				logger.LogDebug("Error: ", err)
+				return err
+			}
+
+			if err := check_message(task, rettask.Message); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -303,8 +312,11 @@ func AnalizeResponse(arr []RetScriptTask, path string, num string) error {
 }
 
 func Execute_test() map[string]string {
-	dir := "./scripts"
-	files, err := os.ReadDir("./scripts")
+
+	cfg := config.GetServerConfig()
+	cfgfw := config.GetFirmwareConfig()
+
+	files, err := os.ReadDir(cfgfw.ScriptsDir)
 
 	test_ctx = test_context{map_inst: make(map[string]string)}
 	report := make(map[string]string)
@@ -317,10 +329,6 @@ func Execute_test() map[string]string {
 		return files[i].Name() < files[j].Name()
 	})
 
-	cfg := config.GetServerConfig()
-	cfgfw := config.GetFirmwareConfig()
-	sn := cfgfw.Serial
-
 	var url string
 	if url = os.Getenv("SERVER_URL"); url == "" {
 		url = fmt.Sprintf("http://%s:%d/integral", cfg.Host, cfg.Port)
@@ -330,7 +338,7 @@ func Execute_test() map[string]string {
 			continue
 		}
 
-		filePath := filepath.Join(dir, file.Name())
+		filePath := filepath.Join(cfgfw.ScriptsDir, file.Name())
 
 		content, err := os.Open(filePath)
 		if err != nil {
@@ -364,7 +372,7 @@ func Execute_test() map[string]string {
 			if script, ok := mp[k]; ok {
 				if script_mp, ok := script.(map[string]any); ok {
 					if curr, ok := script_mp["Script"].(map[string]any); ok {
-						curr["Serial"] = sn
+						curr["Serial"] = cfgfw.Serial
 					}
 					logger.LogDebug("script", script_mp)
 					jsonData, err := json.Marshal(script_mp)

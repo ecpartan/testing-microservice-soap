@@ -6,6 +6,7 @@ require (
 	github.com/ecpartan/soap-server-tr069 v0.0.0-20260825143127-889b0fad6d98
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
+	github.com/robfig/cron/v3 v3.0.1
 	gopkg.in/mail.v2 v2.3.1
 )
 

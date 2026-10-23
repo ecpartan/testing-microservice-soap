@@ -2,37 +2,52 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	logger "github.com/ecpartan/soap-server-tr069/log"
 	"github.com/ecpartan/testing-microservice-soap/config"
 	"github.com/ecpartan/testing-microservice-soap/report"
 	"github.com/ecpartan/testing-microservice-soap/test"
+	"github.com/robfig/cron/v3"
 )
 
 func main() {
 
-	//c := cron.New()
+	c := cron.New()
 	config.LoadConfig()
 	logger.InitLogger(os.Stdout)
 
-	rep := test.Execute_test()
+	if len(os.Args) > 1 {
+		logger.LogDebug("Starting server...", len(os.Args))
 
-	fmt.Println(rep)
-	report.SendReportMail(rep)
-	/*
-		_, err := c.AddFunc("28 18 * * *", func() {
+		if os.Args[1] == "test" {
+			logger.LogDebug("Starting server...", os.Args[1])
+
 			rep := test.Execute_test()
 
 			fmt.Println(rep)
 			report.SendReportMail(rep)
-		})
-
-		if err != nil {
-			log.Fatal(err)
 		}
+		os.Exit(1)
+	}
 
-		c.Start()
+	info := config.GetServerConfig()
+	cronstr := fmt.Sprintf("%d %d * * *", info.CronMinute, info.CronHour)
+	logger.LogDebug("Starting server...", cronstr)
 
-		select {}*/
+	_, err := c.AddFunc(cronstr, func() {
+		rep := test.Execute_test()
+
+		fmt.Println(rep)
+		report.SendReportMail(rep)
+	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	c.Start()
+
+	select {}
 }

@@ -57,6 +57,7 @@ func SendReportMail(report map[string]string) {
 	m.SetHeader("Subject", "Test report! "+time.Now().String())
 
 	m.SetBody("text/plain", msgText)
+	logger.LogDebug("msg", m)
 
 	dialer := gomail.NewDialer(cfg.Host, cfg.Port, cfg.From, cfg.Pass)
 

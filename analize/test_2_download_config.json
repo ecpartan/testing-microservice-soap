@@ -1,8 +1,21 @@
 {
   "1": {
     "1": {
+      "Code": 200
+    }
+  },
+  "2": {
+    "1": {
       "Code": 200, 
       "CheckCode": {}
+    }
+  },
+  "3": {
+    "1": {
+      "Code": 200,
+      "FindValue": {
+        "InternetGatewayDevice.DeviceInfo.ProvisioningCode": ""
+      }
     }
   }
 }

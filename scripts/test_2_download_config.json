@@ -2,11 +2,39 @@
   "1": {
     "Script": {
       "1": {
+        "SetParameterValues": [
+          {
+            "name": "InternetGatewayDevice.DeviceInfo.ProvisioningCode",
+            "type": "xsd:string",
+            "value": "TEST_CODE"
+          }
+        ]
+      },
+      "Event": 6,
+      "Once": true
+    }
+  },
+  "2": {
+    "Script": {
+      "1": {
         "Download": {
           "file": "config",
           "url": "http://192.168.0.129:8080/upload/upload"
         },
-        "WaitEvent": 9
+        "WaitEvent": 1
+      },
+      "Event": 6,
+      "Once": true
+    }
+  },
+  "3": {
+    "Script": {
+      "1": {
+        "GetParameterValues": {
+          "Name": [
+            "InternetGatewayDevice.DeviceInfo.ProvisioningCode"
+          ]
+        }
       },
       "Event": 6,
       "Once": true

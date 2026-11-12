@@ -1,0 +1,41 @@
+{
+  "1": {
+    "Script": {
+      "1": {
+        "SetParameterValues": [
+          {
+            "name": "InternetGatewayDevice.TraceRouteDiagnostics.Host",
+            "type": "xsd:string",
+            "value": "8.8.8.8"
+          },
+          {
+            "name": "InternetGatewayDevice.TraceRouteDiagnostics.DiagnosticsState",
+            "type": "xsd:string",
+            "value": "Requested"
+          },
+          {
+            "name": "InternetGatewayDevice.TraceRouteDiagnostics.MaxHopCount",
+            "type": "xsd:unsignedInt",
+            "value": "30"
+          }
+        ],
+        "WaitEvent": 8
+      },
+      "Event": 6,
+      "Once": true
+    }
+  },
+  "2": {
+    "Script": {
+      "1": {
+        "GetParameterValues": {
+          "Name": [
+            "InternetGatewayDevice.TraceRouteDiagnostics."
+          ]
+        }
+      },
+      "Event": 6,
+      "Once": true
+    }
+  }
+}

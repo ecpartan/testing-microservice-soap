@@ -1,0 +1,17 @@
+{
+   "1":{
+      "1":{
+         "Code":200
+      }
+   },
+   "2":{
+      "1":{
+         "Code":200,
+         "FindValue": {
+            "InternetGatewayDevice.IPPingDiagnostics.DiagnosticsState": "Complete",
+            "InternetGatewayDevice.IPPingDiagnostics.SuccessCount": 1,
+            "InternetGatewayDevice.IPPingDiagnostics.FailureCount": 0
+         }
+      }
+   }
+}

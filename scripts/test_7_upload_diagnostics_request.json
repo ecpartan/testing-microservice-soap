@@ -1,0 +1,41 @@
+{
+  "1": {
+    "Script": {
+      "1": {
+        "SetParameterValues": [
+          {
+            "name": "InternetGatewayDevice.UploadDiagnostics.UploadURL",
+            "type": "xsd:string",
+            "value": "http://192.168.0.129:8080/upload/"
+          },
+          {
+            "name": "InternetGatewayDevice.UploadDiagnostics.DiagnosticsState",
+            "type": "xsd:string",
+            "value": "Requested"
+          },
+          {
+            "name": "InternetGatewayDevice.UploadDiagnostics.TestFileLength",
+            "type": "xsd:unsignedInt",
+            "value": "10486000"
+          }
+        ],
+        "WaitEvent": 8
+      },
+      "Event": 6,
+      "Once": true
+    }
+  },
+  "2": {
+    "Script": {
+      "1": {
+        "GetParameterValues": {
+          "Name": [
+            "InternetGatewayDevice.UploadDiagnostics."
+          ]
+        }
+      },
+      "Event": 6,
+      "Once": true
+    }
+  }
+}

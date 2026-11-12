@@ -34,6 +34,7 @@ type Firmware struct {
 	AnalizeReportsDir string `yaml:"analize_reports_dir"`
 	Name              string `yaml:"name"`
 	UpdateFwDir       string `yaml:"update_fw_dir"`
+	IsUpdateFw        bool   `yaml:"is_update_fw"`
 }
 
 type Config struct {

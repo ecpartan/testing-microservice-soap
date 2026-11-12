@@ -1,0 +1,12 @@
+{
+"Script": {
+    "1": {
+        "Upload": {
+          "file": "firmware"
+        },
+        "WaitEvent": 1
+    },
+    "Event": 6,
+    "Once": true
+    }
+}

@@ -1,0 +1,41 @@
+{
+  "1": {
+    "Script": {
+      "1": {
+        "SetParameterValues": [
+          {
+            "name": "InternetGatewayDevice.IPPingDiagnostics.Host",
+            "type": "xsd:string",
+            "value": "ya.ru"
+          },
+          {
+            "name": "InternetGatewayDevice.IPPingDiagnostics.DiagnosticsState",
+            "type": "xsd:string",
+            "value": "Requested"
+          },
+          {
+            "name": "InternetGatewayDevice.IPPingDiagnostics.DataBlockSize",
+            "type": "xsd:unsignedInt",
+            "value": "56"
+          }
+        ],
+        "WaitEvent": 8
+      },
+      "Event": 6,
+      "Once": true
+    }
+  },
+  "2": {
+    "Script": {
+      "1": {
+        "GetParameterValues": {
+          "Name": [
+            "InternetGatewayDevice.IPPingDiagnostics."
+          ]
+        }
+      },
+      "Event": 6,
+      "Once": true
+    }
+  }
+}

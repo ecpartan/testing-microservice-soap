@@ -284,12 +284,18 @@ func find_ipping_host(task map[string]any, message map[string]any) (error, bool)
 				logger.LogDebug("updateDeviceValues", new_device_cache)
 				hops := parsemap.GetXML(new_device_cache, "InternetGatewayDevice.TraceRouteDiagnostics.RouteHops")
 				if hops_arr := hops.(map[string]any); hops_arr != nil {
-					keys := make([]string, 0, len(hops_arr))
+					keys := make([]int, 0, len(hops_arr))
 					for k := range hops_arr {
-						keys = append(keys, k)
+						if kk, err := strconv.Atoi(k); err != nil {
+							keys = append(keys, kk)
+						} else {
+							return err, true
+						}
 					}
-					sort.Strings(keys)
-					inst := parsemap.GetXMLMap(hops_arr, keys[len(keys)-1])
+
+					sort.Ints(keys)
+					key := fmt.Sprintf("%d", keys[len(keys)-1])
+					inst := parsemap.GetXMLMap(hops_arr, key)
 					if inst != nil {
 						logger.LogDebug("updateDeviceValues", address, parsemap.GetXMLValue(inst, "HopHostAddress"))
 
